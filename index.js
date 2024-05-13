@@ -83,7 +83,39 @@ app.use(cors())
 //     data[index]={...obj,id:data[index].id}
 //     res.send(data)
 // })
-
+const productsSchema=new mongoose.Schema({
+  name:String,
+  price:Number,
+  desc:String
+})
+const ProductsModel = mongoose.model('products', productsSchema);
+app.get('/products', async(req,res)=>{
+  const products= await ProductsModel.find()
+  res.send(products)
+})
+app.get('/products/:id', async(req,res)=>{
+  const{id}=req.params
+  const products= await ProductsModel.findById(id)
+  res.send(products)
+})
+app.post('/products', async(req,res)=>{
+ const body=req.body
+ const products=new ProductsModel(body)
+ products.save()
+  res.send(products)
+})
+app.delete('/products/:id',async(req,res)=>{
+  const {id}=req.params
+  const DeleteProducts=await ProductsModel.findByIdAndDelete(id)
+  // res.send(DeleteProducts)
+  res.send({message:"mehsul silindi"})
+})
+app.put('/products/:id', async (req,res)=>{
+  const {id}=req.params
+  const body=req.body
+  const  UpdateProducts= await ProductsModel.findByIdAndUpdate(id,body)
+  res.send({message:"update olundu"})
+})
 mongoose.connect('mongodb+srv://NiyazovAsad:Niyazovesed2004@ourdb.n1ga79r.mongodb.net/')
   .then(() => console.log('Connected!'))
   .catch((err)=>console.log('Not connected')+err.message)
